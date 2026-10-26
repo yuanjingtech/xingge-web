@@ -1,6 +1,6 @@
-# 性格分析 · 落地页（xingge-web）
+# 我的MBTI人格 · 落地页（xingge-web）
 
-微信小程序「性格分析 / MBTI 十六型人格测试」的 Web 落地页。纯静态，无构建、无运行时依赖。
+微信小程序「我的MBTI人格」的 Web 落地页。纯静态，无构建、无运行时依赖。
 
 - **线上用途**：让第一次来的人 30 秒内明白产品是什么、凭什么信、下一步点哪里，最终引流到小程序码。
 - **打开方式**：双击 `index.html` 即可（`file://` 直接可看），或丢到任意静态托管。
@@ -50,9 +50,10 @@ python3 -m http.server 8000        # 然后打开 http://localhost:8000
 
 ## 品牌名
 
-当前站点名用仓库 README 的称呼「性格分析」。小程序正式名尚未定
-（源仓库 `docs/ops/miniapp/info.md` 提议「知己赋」，`review-notes.md` 明确说账号名未最终确认）。
-改名只需改 `tools/build_data.py` 里的 `BRAND` 常量，重跑一次即可。
+站点名 = 小程序正式名 **「我的MBTI人格」**（人类 2026-10-26 确认）。
+名字不写死在页面里：`tools/build_data.py` 直接从源仓库已注册的
+`xingge-app-kuikly/miniApp/dist/app.json` 的 `navigationBarTitleText` 读取，
+所以改小程序名 = 改小程序配置，重跑一次脚本页面自动跟上，不会两边漂移。
 
 ## 设计要点
 

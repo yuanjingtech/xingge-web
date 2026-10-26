@@ -38,6 +38,8 @@ PROFILE_KT = os.path.join(
     "shared/src/commonMain/kotlin/com/yuanjingtech/xingge/app/mbti/data/json/ProfileData.kt",
 )
 QR_PNG = os.path.join(APP_ROOT, "shared/src/commonMain/assets/common/mbti/poster-qr.png")
+# 小程序构建产物里的 window.navigationBarTitleText 就是已注册的正式名
+MINIAPP_APP_JSON = os.path.join(APP_ROOT, "miniApp/dist/app.json")
 
 OUT_JS = os.path.join(WEB_ROOT, "assets/data/personalities.js")
 OUT_QR = os.path.join(WEB_ROOT, "assets/img/poster-qr.png")
@@ -48,10 +50,11 @@ GALLERY_END = "<!-- GALLERY:END -->"
 REPORT_START = "<!-- REPORT:START · 由 tools/build_data.py 生成 -->"
 REPORT_END = "<!-- REPORT:END -->"
 
-# 站点品牌名。小程序正式名未定（见 docs/ops/miniapp/info.md、review-notes.md），
-# 暂用仓库 README 的称呼，改这里一处即可。
-BRAND = "性格分析"
-BRAND_EN = "Xingge"
+# 站点品牌名 = 小程序正式名「我的MBTI人格」（人类 2026-10-26 确认）。
+# 优先从源仓库已注册的 navigationBarTitleText 读取，读不到再用下面的常量兜底，
+# 避免品牌名在两边漂移。改品牌名 = 改小程序配置，不是改这里。
+BRAND_FALLBACK = "我的MBTI人格"
+BRAND_EN = "MyMBTI"
 
 GROUPS = [
     ("分析家", "NT", "直觉 + 思考", "INTJ INTP ENTJ ENTP"),
@@ -242,13 +245,24 @@ def load_sources():
     if not os.path.exists(QR_PNG):
         fail(f"小程序码不存在：{QR_PNG}")
 
+    # 品牌名：优先取小程序已注册的正式名
+    brand = BRAND_FALLBACK
+    if os.path.exists(MINIAPP_APP_JSON):
+        try:
+            app_json = json.loads(read_text(MINIAPP_APP_JSON))
+            title = (app_json.get("window") or {}).get("navigationBarTitleText")
+            if title:
+                brand = title.strip()
+        except json.JSONDecodeError:
+            print("build_data.py: 警告：app.json 解析失败，用兜底品牌名", file=sys.stderr)
+
     personalities = result.get("personalities") or []
     if len(personalities) != 16:
         fail(f"result.json 期望 16 型，实际 {len(personalities)}")
     if len(profile.get("profiles") or {}) != 16:
         fail("ProfileData 期望 16 型")
 
-    return personalities, profile, tiku
+    return personalities, profile, tiku, brand
 
 
 def build_personality(item, prof, dims):
@@ -299,7 +313,7 @@ def build_personality(item, prof, dims):
 
 
 def build():
-    personalities, profile, tiku = load_sources()
+    personalities, profile, tiku, brand = load_sources()
     dims = profile["dims"]
 
     items = [build_personality(x, profile, dims) for x in personalities]
@@ -320,7 +334,7 @@ def build():
     total = len(tiku["questions"])
 
     return {
-        "brand": BRAND,
+        "brand": brand,
         "brandEn": BRAND_EN,
         "totalQuestions": total,
         "dimensionCounts": counts,

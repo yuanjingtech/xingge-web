@@ -2,8 +2,8 @@
    源：shared/.../assets/common/result.json、tiku.json、ProfileData.kt
    重跑：python3 tools/build_data.py */
 window.XINGGE_DATA = {
-  "brand": "性格分析",
-  "brandEn": "Xingge",
+  "brand": "我的MBTI人格",
+  "brandEn": "MyMBTI",
   "totalQuestions": 28,
   "dimensionCounts": {
     "EI": 7,
