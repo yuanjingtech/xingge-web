@@ -32,6 +32,8 @@ tools/verify.py            自动验证（112 项）
 
 源结构变了、或者源文件缺失，脚本会**报错退出**，不会静默生成空页面。
 
+**线上地址**：https://yuanjingtech.github.io/xingge-web/
+
 ## 使用
 
 ```bash
@@ -47,6 +49,8 @@ python3 -m http.server 8000        # 然后打开 http://localhost:8000
 ```
 
 依赖：仅 Python 3 标准库。
+
+**发布**：`git push origin main` 后 GitHub Pages 约 1 分钟内自动更新（legacy 模式，与 jizhang-app-web 一致）。
 
 ## 品牌名
 
